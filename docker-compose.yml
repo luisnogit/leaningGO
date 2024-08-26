@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  app:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+      target: dev
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    depends_on:
+      - db
+    volumes:
+      - ./:/app
+    links: 
+      - "db:database"
+  db:
+    image: mysql
+    env_file:
+      - .env
+    ports:
+      - "${MYSQL_PORT}:3060"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./migrate/001-create_tables.sql:/docker-entrypoint-initdb.d/init.sql
+volumes:
+  mysql_data:
