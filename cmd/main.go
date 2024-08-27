@@ -1,29 +1,19 @@
 package main
 
 import (
-	"database/sql"
+	_ "database/sql"
 	"fmt"
-	"log"
+	_ "log"
 	"net/http"
 
+	"github.com/a-h/templ"
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/luisnogit/learningGO/views"
 )
 
 func main() {
-	db, err := sql.Open("mysql", "root:root@(database:3307)/")
-	if err != nil {
-		log.Fatal(err)
-	}
+	http.Handle("/", templ.Handler(views.Landingpage()))
 
-	defer db.Close()
-	err = db.Ping()
-	if err != nil {
-		log.Fatal(err)
-	}else {
-		fmt.Println("Conn alive")
-	}
-
-	http.Handle("/", http.FileServer(http.Dir("./web/templates")))
 	fmt.Println("deu certo")
 	http.ListenAndServe(":8080", nil)
 
